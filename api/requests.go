@@ -17,12 +17,6 @@ type MessageOperationsRequestBody struct {
 	Content string `json:"content"`
 }
 
-type TestMessageOperationsRequestBody struct {
-	To      string `json:"to" binding:"email"`
-	Subject string `json:"subject"`
-	Content string `json:"content"`
-}
-
 func (op *UserOperationsRequestBody) Validate(action models.Action) error {
 	switch action {
 	case models.Create:

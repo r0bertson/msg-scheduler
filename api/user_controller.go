@@ -65,7 +65,17 @@ func (h handler) CreateUser(c *gin.Context) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	go func() {
+		var msgs []models.Message
+		if result := h.DB.Limit(10).Find(&msgs); result.Error != nil {
+			return //this can "safely" fail. a routine will pick this up later
+		}
+		var emails []messaging.EmailPayload
+		for _, msg := range msgs {
+			emails = append(emails, messaging.EmailPayload{To: user.Email, Subject: msg.Subject, Content: msg.Content})
+		}
+		h.msgService.ScheduleEmails(emails, 1)
+	}()
 	return savedUser, err
 }
 

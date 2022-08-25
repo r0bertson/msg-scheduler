@@ -1,12 +1,15 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"msg-scheduler/common/messaging"
+)
 
 func (h handler) SendTestMessage(c *gin.Context) (interface{}, error) {
 	// getting request's body
-	msg := TestMessageOperationsRequestBody{}
+	msg := messaging.EmailPayload{}
 	if err := c.BindJSON(&msg); err != nil {
 		return BadRequest(c, err.Error())
 	}
-	return nil, h.msgService.SendMessage(msg.To, msg.Subject, msg.Content)
+	return nil, h.msgService.SendMessage(msg)
 }

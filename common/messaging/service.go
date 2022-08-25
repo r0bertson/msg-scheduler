@@ -5,8 +5,15 @@ import (
 	"strings"
 )
 
+type EmailPayload struct {
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Content string `json:"content"`
+}
+
 type MsgService interface {
-	SendMessage(to, subject, content string) error
+	SendMessage(payload EmailPayload) error
+	ScheduleEmails(emails []EmailPayload, interval int) error
 }
 
 func Init(service, key string) MsgService {
