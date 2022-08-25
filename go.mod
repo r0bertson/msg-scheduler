@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/badoux/checkmail v1.2.1
 	github.com/gin-gonic/gin v1.8.1
+	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/spf13/viper v1.12.0
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
 	github.com/swaggo/gin-swagger v1.5.2
@@ -52,6 +53,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

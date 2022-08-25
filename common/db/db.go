@@ -30,7 +30,7 @@ func Init(url, env string) *gorm.DB {
 		log.Fatalln(err)
 	}
 
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Message{})
 
 	return db
 }

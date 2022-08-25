@@ -4,11 +4,23 @@ import (
 	"errors"
 	"github.com/badoux/checkmail"
 	"msg-scheduler/common/models"
+	"strings"
 )
 
 type UserOperationsRequestBody struct {
 	Email    string `json:"email" binding:"email"`
 	Password string `json:"password"`
+}
+
+type MessageOperationsRequestBody struct {
+	Subject string `json:"subject"`
+	Content string `json:"content"`
+}
+
+type TestMessageOperationsRequestBody struct {
+	To      string `json:"to" binding:"email"`
+	Subject string `json:"subject"`
+	Content string `json:"content"`
 }
 
 func (op *UserOperationsRequestBody) Validate(action models.Action) error {
@@ -39,6 +51,20 @@ func (op *UserOperationsRequestBody) Validate(action models.Action) error {
 	default:
 		return nil
 	}
+}
+
+func (op *MessageOperationsRequestBody) Validate(action models.Action) error {
+	switch action {
+	case models.Create, models.Update:
+		if strings.TrimSpace(op.Content) == "" {
+			return fieldRequiredError("content")
+		}
+		if strings.TrimSpace(op.Subject) == "" {
+			return fieldRequiredError("subject")
+		}
+	}
+
+	return nil
 }
 
 func fieldRequiredError(field string) error {

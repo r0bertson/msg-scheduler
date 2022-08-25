@@ -3,11 +3,13 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"msg-scheduler/common/messaging"
 	"msg-scheduler/common/models"
 )
 
 type handler struct {
-	DB *gorm.DB
+	DB         *gorm.DB
+	msgService messaging.MsgService
 }
 
 func (h handler) GetUser(c *gin.Context) (interface{}, error) {
