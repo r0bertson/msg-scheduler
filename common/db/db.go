@@ -31,6 +31,8 @@ func Init(url, env string) *gorm.DB {
 	}
 
 	db.AutoMigrate(&models.User{}, &models.Message{})
-
+	if result := db.First(&models.Message{}); result.RowsAffected == 0 {
+		seedMessages(db)
+	}
 	return db
 }
