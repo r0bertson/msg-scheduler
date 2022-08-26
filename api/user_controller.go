@@ -14,7 +14,6 @@ type handler struct {
 
 func (h handler) GetUser(c *gin.Context) (interface{}, error) {
 	var user models.User
-
 	if result := h.DB.First(&user, c.Param("id")); result.Error != nil {
 		return NotFoundWithMessage(c, result.Error.Error())
 	}
@@ -38,7 +37,6 @@ func (h handler) DeleteUser(c *gin.Context) (interface{}, error) {
 	}
 
 	h.DB.Delete(&user)
-
 	return NoContent(c)
 }
 
@@ -68,7 +66,7 @@ func (h handler) CreateUser(c *gin.Context) (interface{}, error) {
 	go func() {
 		var msgs []models.Message
 		if result := h.DB.Limit(10).Find(&msgs); result.Error != nil {
-			return //this can "safely" fail. a routine will pick this up later
+			return //this can "safely" fail because a routine will pick this up later
 		}
 		var emails []messaging.EmailPayload
 		for _, msg := range msgs {
@@ -97,7 +95,8 @@ func (h handler) UpdateUser(c *gin.Context) (interface{}, error) {
 	}
 
 	user.Password = body.Password
+	user.Email = body.Email
 
-	h.DB.Save(&user)
+	user.UpdateUser(h.DB)
 	return user, nil
 }

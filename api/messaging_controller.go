@@ -7,9 +7,12 @@ import (
 
 func (h handler) SendTestMessage(c *gin.Context) (interface{}, error) {
 	// getting request's body
-	msg := messaging.EmailPayload{}
+	msg := SendEmailRequestBody{}
 	if err := c.BindJSON(&msg); err != nil {
 		return BadRequest(c, err.Error())
 	}
-	return nil, h.msgService.SendMessage(msg)
+	if msg.Timeout != nil {
+		return nil, h.msgService.ScheduleEmails([]messaging.EmailPayload{msg.Payload}, *msg.Timeout)
+	}
+	return nil, h.msgService.SendMessage(msg.Payload)
 }

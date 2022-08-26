@@ -3,28 +3,34 @@ package api
 import (
 	"errors"
 	"github.com/badoux/checkmail"
+	"msg-scheduler/common/messaging"
 	"msg-scheduler/common/models"
 	"strings"
 )
 
 type UserOperationsRequestBody struct {
-	Email    string `json:"email" binding:"email"`
-	Password string `json:"password"`
+	Email    string `binding:"email"`
+	Password string
 }
 
 type MessageOperationsRequestBody struct {
-	Subject string `json:"subject"`
-	Content string `json:"content"`
+	Subject string
+	Content string
+}
+
+type SendEmailRequestBody struct {
+	Timeout *int
+	Payload messaging.EmailPayload
 }
 
 func (op *UserOperationsRequestBody) Validate(action models.Action) error {
 	switch action {
 	case models.Create:
 		if op.Password == "" {
-			return fieldRequiredError("password")
+			return fieldRequiredError("Password")
 		}
 		if op.Email == "" {
-			return fieldRequiredError("email")
+			return fieldRequiredError("Email")
 		}
 		if err := checkmail.ValidateFormat(op.Email); err != nil {
 			return errors.New("invalid email")
@@ -33,10 +39,10 @@ func (op *UserOperationsRequestBody) Validate(action models.Action) error {
 		return nil
 	case models.Update:
 		if op.Password == "" {
-			return fieldCannotBeEmptyError("password")
+			return fieldCannotBeEmptyError("Password")
 		}
 		if op.Email == "" {
-			return fieldCannotBeEmptyError("email")
+			return fieldCannotBeEmptyError("Email")
 		}
 		if err := checkmail.ValidateFormat(op.Email); err != nil {
 			return errors.New("invalid email format")
@@ -51,10 +57,10 @@ func (op *MessageOperationsRequestBody) Validate(action models.Action) error {
 	switch action {
 	case models.Create, models.Update:
 		if strings.TrimSpace(op.Content) == "" {
-			return fieldRequiredError("content")
+			return fieldRequiredError("Content")
 		}
 		if strings.TrimSpace(op.Subject) == "" {
-			return fieldRequiredError("subject")
+			return fieldRequiredError("Subject")
 		}
 	}
 

@@ -31,7 +31,6 @@ func (h handler) DeleteMessage(c *gin.Context) (interface{}, error) {
 	}
 
 	h.DB.Delete(&msg)
-
 	return NoContent(c)
 }
 func (h handler) CreateMessage(c *gin.Context) (interface{}, error) {
