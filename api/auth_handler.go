@@ -41,3 +41,16 @@ func (h handler) getAuthentication(c *gin.Context) *models.Session {
 	}
 	return nil
 }
+
+func (h handler) userHasPermission(c *gin.Context, userId uint) bool {
+	auth := h.getAuthentication(c)
+	if auth == nil {
+		NotFound(c)
+		return false
+	}
+	if auth.ID != userId {
+		Unauthorized(c, "authenticated user has no access to this resource")
+		return false
+	}
+	return true
+}

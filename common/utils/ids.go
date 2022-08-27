@@ -2,6 +2,7 @@ package utils
 
 import (
 	"math/rand"
+	"strconv"
 )
 
 // Characters to use for random ID generation.
@@ -35,4 +36,9 @@ func RandString(chars string, idxBits uint, idxMask int64, idxMax int, n int) st
 	}
 
 	return string(b)
+}
+
+func UintID(str string) (uint, error) {
+	id, err := strconv.ParseUint(str, 10, 64)
+	return uint(id), err
 }

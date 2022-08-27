@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"msg-scheduler/common/messaging"
 	"msg-scheduler/common/models"
+	"msg-scheduler/common/utils"
 )
 
 type handler struct {
@@ -13,6 +14,15 @@ type handler struct {
 }
 
 func (h handler) GetUser(c *gin.Context) (interface{}, error) {
+	userId, err := utils.UintID(c.Param("id"))
+	if err != nil {
+		return BadRequest(c, err.Error())
+	}
+
+	if !h.userHasPermission(c, userId) {
+		return nil, nil //already handled
+	}
+
 	var user models.User
 	if result := h.DB.First(&user, c.Param("id")); result.Error != nil {
 		return NotFoundWithMessage(c, result.Error.Error())
@@ -45,8 +55,16 @@ func (h handler) GetUsers(c *gin.Context) (interface{}, error) {
 }
 
 func (h handler) DeleteUser(c *gin.Context) (interface{}, error) {
+	userId, err := utils.UintID(c.Param("id"))
+	if err != nil {
+		return BadRequest(c, err.Error())
+	}
+
+	if !h.userHasPermission(c, userId) {
+		return nil, nil //already handled
+	}
 	var user models.User
-	if result := h.DB.First(&user, c.Param("id")); result.Error != nil {
+	if result := h.DB.First(&user); result.Error != nil {
 		return NotFoundWithMessage(c, result.Error.Error())
 	}
 
