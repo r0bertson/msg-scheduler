@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/badoux/checkmail v1.2.1
 	github.com/gin-gonic/gin v1.8.1
+	github.com/segmentio/ksuid v1.0.4
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/spf13/viper v1.12.0
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a

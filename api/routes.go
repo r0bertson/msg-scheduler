@@ -16,12 +16,16 @@ func RegisterRoutes(engine *gin.Engine, db *gorm.DB, msgService messaging.MsgSer
 
 	version1 := engine.Group("/api/v1/")
 	{
+		authGroup := version1.Group("/auth")
+		{
+			authGroup.POST("/login", BasicHandler(h.Login))
+		}
 		group := version1.Group("/users")
 		{
+			group.GET("/me", BasicHandler(h.GetMe))
 			group.POST("/", BasicHandler(h.CreateUser))
 			group.GET("/", BasicHandler(h.GetUsers))
 			group.GET("/:id", BasicHandler(h.GetUser))
-			group.PATCH("/:id", BasicHandler(h.UpdateUser))
 			group.DELETE("/:id", BasicHandler(h.DeleteUser))
 		}
 
@@ -38,7 +42,7 @@ func RegisterRoutes(engine *gin.Engine, db *gorm.DB, msgService messaging.MsgSer
 		{
 			messagingGroup.POST("/send", BasicHandler(h.SendTestMessage))
 		}
-		
+
 		version1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
 

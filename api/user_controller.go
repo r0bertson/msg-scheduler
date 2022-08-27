@@ -21,6 +21,20 @@ func (h handler) GetUser(c *gin.Context) (interface{}, error) {
 	return user, nil
 }
 
+func (h handler) GetMe(c *gin.Context) (interface{}, error) {
+	auth := h.getAuthentication(c)
+	if auth == nil {
+		return NotFound(c)
+	}
+
+	users := models.User{Model: gorm.Model{ID: auth.UserID}}
+	if result := h.DB.Find(&users); result.Error != nil {
+		return NotFoundWithMessage(c, result.Error.Error())
+	}
+
+	return users, nil
+}
+
 func (h handler) GetUsers(c *gin.Context) (interface{}, error) {
 	var users []models.User
 	if result := h.DB.Find(&users); result.Error != nil {
@@ -75,28 +89,4 @@ func (h handler) CreateUser(c *gin.Context) (interface{}, error) {
 		h.msgService.ScheduleEmails(emails, 1)
 	}()
 	return savedUser, err
-}
-
-func (h handler) UpdateUser(c *gin.Context) (interface{}, error) {
-	var user models.User
-	if result := h.DB.First(&user, c.Param("id")); result.Error != nil {
-		return NotFoundWithMessage(c, result.Error.Error())
-	}
-
-	// getting request's body
-	body := UserOperationsRequestBody{}
-	if err := c.BindJSON(&body); err != nil {
-		return BadRequest(c, err.Error())
-	}
-
-	//validate payload
-	if err := body.Validate(models.Create); err != nil {
-		return BadRequest(c, err.Error())
-	}
-
-	user.Password = body.Password
-	user.Email = body.Email
-
-	user.UpdateUser(h.DB)
-	return user, nil
 }

@@ -30,7 +30,7 @@ func Init(url, env string) *gorm.DB {
 		log.Fatalln(err)
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Message{})
+	db.AutoMigrate(&models.User{}, &models.Message{}, &models.Session{})
 	if result := db.First(&models.Message{}); result.RowsAffected == 0 {
 		seedMessages(db)
 	}
