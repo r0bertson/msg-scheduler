@@ -6,6 +6,18 @@ import (
 	"msg-scheduler/common/utils"
 )
 
+// Login godoc
+// @Summary      Authenticates a user
+// @Description  Authenticates a user
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param  data body UserOperationsRequestBody true "email and pwd struct"
+// @Success      200  {object}  models.Session
+// @Failure      400  {object}  ErrResp
+// @Failure      401  {object}  ErrResp
+// @Failure      404  {object}  ErrResp
+// @Router       /auth/login [post]
 func (h handler) Login(c *gin.Context) (interface{}, error) {
 	// Decode request body to get email and password.
 	var req UserOperationsRequestBody

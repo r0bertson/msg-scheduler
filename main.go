@@ -9,6 +9,18 @@ import (
 	"msg-scheduler/docs"
 )
 
+// @title           msg-scheduler API
+// @version         1.0
+// @description     This is a sample email scheduler.
+
+// @contact.name   Robertson Lima
+// @contact.url    http://robertsonlima.com
+// @contact.email  email@robertsonlima.com
+
+// @host      localhost:3000
+// @BasePath  /api/v1
+
+// @securityDefinitions.basic  BasicAuth
 func main() {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	viper.SetConfigFile("./dev.env")
