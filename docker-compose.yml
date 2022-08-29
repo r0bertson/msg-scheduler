@@ -28,6 +28,23 @@ services:
     env_file:
       - "./dev-postgres.env"
 
+  scheduler-service:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      args:
+        SERVICE: "scheduler"
+    entrypoint: "./scheduler"
+    restart: unless-stopped
+    ports:
+      - '4000:4000'
+    expose:
+      - 4000
+    depends_on:
+      - db
+    env_file:
+      - "./dev-postgres.env"
+
 networks:
   default:
 volumes:
