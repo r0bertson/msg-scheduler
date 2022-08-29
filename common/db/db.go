@@ -2,11 +2,11 @@ package db
 
 import (
 	"errors"
-	"github.com/msg-scheduler/common/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
+	"msg-scheduler/common/models"
 	"os"
 )
 

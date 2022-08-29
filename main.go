@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/msg-scheduler/api"
-	"github.com/msg-scheduler/common/db"
-	"github.com/msg-scheduler/common/messaging"
-	"github.com/msg-scheduler/docs"
 	"github.com/spf13/viper"
+	"msg-scheduler/api"
+	"msg-scheduler/common/db"
+	"msg-scheduler/common/messaging"
+	"msg-scheduler/docs"
 )
 
 // @title           msg-scheduler API

@@ -2,10 +2,10 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/msg-scheduler/common/messaging"
-	"github.com/msg-scheduler/common/models"
-	"github.com/msg-scheduler/common/utils"
 	"gorm.io/gorm"
+	"msg-scheduler/common/messaging"
+	"msg-scheduler/common/models"
+	"msg-scheduler/common/utils"
 )
 
 type handler struct {

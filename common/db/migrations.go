@@ -2,10 +2,10 @@ package db
 
 import (
 	"fmt"
-	"github.com/msg-scheduler/common/models"
 	"gorm.io/gorm"
 	"log"
 	"math/rand"
+	"msg-scheduler/common/models"
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")

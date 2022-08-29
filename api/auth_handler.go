@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/msg-scheduler/common/models"
-	"github.com/msg-scheduler/common/utils"
+	"msg-scheduler/common/models"
+	"msg-scheduler/common/utils"
 )
 
 // Login godoc
