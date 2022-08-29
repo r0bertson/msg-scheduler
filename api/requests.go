@@ -3,8 +3,8 @@ package api
 import (
 	"errors"
 	"github.com/badoux/checkmail"
-	"msg-scheduler/common/messaging"
-	"msg-scheduler/common/models"
+	"github.com/msg-scheduler/common/messaging"
+	"github.com/msg-scheduler/common/models"
 	"strings"
 )
 

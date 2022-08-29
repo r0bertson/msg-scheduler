@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"msg-scheduler/common/messaging"
+	"github.com/msg-scheduler/common/messaging"
 )
 
 // SendTestMessage godoc

@@ -2,10 +2,10 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/msg-scheduler/common/messaging"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
-	"msg-scheduler/common/messaging"
 )
 
 func RegisterRoutes(engine *gin.Engine, db *gorm.DB, msgService messaging.MsgService) {
