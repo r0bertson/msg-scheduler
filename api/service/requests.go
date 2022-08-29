@@ -1,10 +1,10 @@
-package api
+package service
 
 import (
 	"errors"
 	"github.com/badoux/checkmail"
-	"msg-scheduler/common/messaging"
-	"msg-scheduler/common/models"
+	"github.com/r0bertson/msg-scheduler/common/messaging"
+	"github.com/r0bertson/msg-scheduler/common/models"
 	"strings"
 )
 

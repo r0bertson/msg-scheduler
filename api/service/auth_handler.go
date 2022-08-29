@@ -1,9 +1,9 @@
-package api
+package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"msg-scheduler/common/models"
-	"msg-scheduler/common/utils"
+	"github.com/r0bertson/msg-scheduler/common/models"
+	"github.com/r0bertson/msg-scheduler/common/utils"
 )
 
 // Login godoc
@@ -24,9 +24,9 @@ func (h handler) Login(c *gin.Context) (interface{}, error) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		return BadRequest(c, err.Error())
 	}
-	var user models.User
-	if result := h.DB.First(&user, c.Param("id")); result.Error != nil {
-		return NotFoundWithMessage(c, result.Error.Error())
+	user, err := h.DB.UserByEmail(req.Email)
+	if err != nil {
+		return NotFoundWithMessage(c, err.Error())
 	}
 
 	if !utils.CompareHashedKeys(user.Password, req.Password) {
@@ -34,7 +34,7 @@ func (h handler) Login(c *gin.Context) (interface{}, error) {
 	}
 
 	// Create a session for the user.
-	session, err := user.CreateSession(h.DB)
+	session, err := h.DB.CreateSession(user.ID, user.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -47,9 +47,8 @@ func (h handler) Login(c *gin.Context) (interface{}, error) {
 }
 
 func (h handler) getAuthentication(c *gin.Context) *models.Session {
-	session := models.Session{}
 	if token, err := c.Cookie("session"); err == nil {
-		return session.LookupSession(h.DB, token)
+		return h.DB.LookupSession(token)
 	}
 	return nil
 }

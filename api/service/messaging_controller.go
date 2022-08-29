@@ -1,8 +1,8 @@
-package api
+package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"msg-scheduler/common/messaging"
+	"github.com/r0bertson/msg-scheduler/common/messaging"
 )
 
 // SendTestMessage godoc

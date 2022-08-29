@@ -2,10 +2,9 @@ package db
 
 import (
 	"fmt"
-	"gorm.io/gorm"
+	"github.com/r0bertson/msg-scheduler/common/models"
 	"log"
 	"math/rand"
-	"msg-scheduler/common/models"
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -26,9 +25,9 @@ func getDefaultMessages() []models.Message {
 	return msgs
 }
 
-func seedMessages(db *gorm.DB) {
+func seedMessages(db *Client) {
 	for _, msg := range getDefaultMessages() {
-		if _, err := msg.SaveMessage(db); err != nil {
+		if _, err := db.CreateMessage(&msg); err != nil {
 			log.Fatal(err)
 		}
 	}

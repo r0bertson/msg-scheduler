@@ -3,11 +3,11 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/joeshaw/envdecode"
+	"github.com/r0bertson/msg-scheduler/api/service"
+	"github.com/r0bertson/msg-scheduler/common/db"
+	"github.com/r0bertson/msg-scheduler/common/messaging"
+	"github.com/r0bertson/msg-scheduler/docs"
 	"log"
-	"msg-scheduler/api"
-	"msg-scheduler/common/db"
-	"msg-scheduler/common/messaging"
-	"msg-scheduler/docs"
 )
 
 type Config struct {
@@ -20,7 +20,7 @@ type Config struct {
 }
 
 // @title           msg-scheduler API
-// @version         1.0
+// @version         2.0
 // @description     This is a sample email scheduler.
 
 // @contact.name   Robertson Lima
@@ -30,8 +30,8 @@ type Config struct {
 // @host      localhost:3000
 // @BasePath  /api/v1
 func main() {
-	docs.SwaggerInfo.BasePath = "/api/v1"
-	cfg := Config{AppName: "msg-scheduler"}
+	docs.SwaggerInfo.BasePath = "/api/v2"
+	cfg := Config{AppName: "github.com/r0bertson/msg-scheduler/api"}
 
 	/*using envdecode to avoid repetition, but the same can be easily
 	achieved with multiple os.Getenv(key) and ordinary error handling */
@@ -41,7 +41,7 @@ func main() {
 
 	engine := gin.Default()
 
-	api.RegisterRoutes(engine, db.Init(cfg.DBURL, cfg.Env), messaging.Init(cfg.MsgService, cfg.MsgKey))
+	service.RegisterRoutes(engine, db.Init(cfg.DBURL, cfg.Env), messaging.Init(cfg.MsgService, cfg.MsgKey))
 
 	engine.Run(cfg.Port)
 }

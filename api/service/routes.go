@@ -1,14 +1,14 @@
-package api
+package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/r0bertson/msg-scheduler/common/db"
+	"github.com/r0bertson/msg-scheduler/common/messaging"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"gorm.io/gorm"
-	"msg-scheduler/common/messaging"
 )
 
-func RegisterRoutes(engine *gin.Engine, db *gorm.DB, msgService messaging.MsgService) {
+func RegisterRoutes(engine *gin.Engine, db *db.Client, msgService messaging.MsgService) {
 	h := &handler{
 		DB:         db,
 		msgService: msgService,

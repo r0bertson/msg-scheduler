@@ -1,8 +1,9 @@
-package api
+package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"msg-scheduler/common/models"
+	"github.com/r0bertson/msg-scheduler/common/models"
+	"github.com/r0bertson/msg-scheduler/common/utils"
 )
 
 // GetMessage godoc
@@ -16,10 +17,14 @@ import (
 // @Failure      404  {object}  ErrResp
 // @Router       /messages/{id} [get]
 func (h handler) GetMessage(c *gin.Context) (interface{}, error) {
-	var msg models.Message
+	msgID, err := utils.UintID(c.Param("id"))
+	if err != nil {
+		return BadRequest(c, err.Error())
+	}
 
-	if result := h.DB.First(&msg, c.Param("id")); result.Error != nil {
-		return NotFoundWithMessage(c, result.Error.Error())
+	msg, err := h.DB.MessageByID(msgID)
+	if err != nil {
+		return NotFoundWithMessage(c, err.Error())
 	}
 
 	return msg, nil
@@ -32,15 +37,10 @@ func (h handler) GetMessage(c *gin.Context) (interface{}, error) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {array}  ErrResp
-// @Failure      404  {object}  ErrResp
+// @Failure      500  {object}  ErrResp
 // @Router       /messages [get]
 func (h handler) GetMessages(c *gin.Context) (interface{}, error) {
-	var msgs []models.Message
-	if result := h.DB.Find(&msgs); result.Error != nil {
-		return NotFoundWithMessage(c, result.Error.Error())
-	}
-
-	return msgs, nil
+	return h.DB.Messages()
 }
 
 // DeleteMessage godoc
@@ -54,12 +54,15 @@ func (h handler) GetMessages(c *gin.Context) (interface{}, error) {
 // @Failure      404  {object}  ErrResp
 // @Router       /messages/{id} [delete]
 func (h handler) DeleteMessage(c *gin.Context) (interface{}, error) {
-	var msg models.Message
-	if result := h.DB.First(&msg, c.Param("id")); result.Error != nil {
-		return NotFoundWithMessage(c, result.Error.Error())
+	msgID, err := utils.UintID(c.Param("id"))
+	if err != nil {
+		return BadRequest(c, err.Error())
 	}
 
-	h.DB.Delete(&msg)
+	if err = h.DB.DeleteMessage(msgID); err != nil {
+		return NotFoundWithMessage(c, err.Error())
+	}
+
 	return NoContent(c)
 }
 
@@ -84,17 +87,17 @@ func (h handler) CreateMessage(c *gin.Context) (interface{}, error) {
 		return BadRequest(c, err.Error())
 	}
 
-	var message models.Message
+	message := &models.Message{
+		Content: body.Content,
+		Subject: body.Subject,
+	}
 
-	message.Content = body.Content
-	message.Subject = body.Subject
-
-	savedUser, err := message.SaveMessage(h.DB)
+	message, err := h.DB.CreateMessage(message)
 	if err != nil {
 		return nil, err
 	}
 
-	return savedUser, err
+	return message, err
 }
 
 // UpdateMessage godoc
@@ -109,9 +112,14 @@ func (h handler) CreateMessage(c *gin.Context) (interface{}, error) {
 // @Failure      400  {object}  ErrResp
 // @Router       /messages/{id} [post]
 func (h handler) UpdateMessage(c *gin.Context) (interface{}, error) {
-	var message models.Message
-	if result := h.DB.First(&message, c.Param("id")); result.Error != nil {
-		return NotFoundWithMessage(c, result.Error.Error())
+	msgID, err := utils.UintID(c.Param("id"))
+	if err != nil {
+		return BadRequest(c, err.Error())
+	}
+
+	msg, err := h.DB.MessageByID(msgID)
+	if err != nil {
+		return NotFoundWithMessage(c, "message not found")
 	}
 
 	// getting request's body
@@ -125,9 +133,8 @@ func (h handler) UpdateMessage(c *gin.Context) (interface{}, error) {
 		return BadRequest(c, err.Error())
 	}
 
-	message.Subject = body.Subject
-	message.Content = body.Content
+	msg.Subject = body.Subject
+	msg.Content = body.Content
 
-	h.DB.Save(&message)
-	return message, nil
+	return h.DB.UpdateMessage(msg)
 }
