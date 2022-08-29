@@ -2,12 +2,22 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
+	"github.com/joeshaw/envdecode"
+	"log"
 	"msg-scheduler/api"
 	"msg-scheduler/common/db"
 	"msg-scheduler/common/messaging"
 	"msg-scheduler/docs"
 )
+
+type Config struct {
+	AppName    string
+	Env        string `env:"ENV,default=local"`
+	DBURL      string `env:"DB_URL,default=./db.sqlite"`
+	Port       string `env:"PORT,default=3000"`
+	MsgService string `env:"MESSAGING_SERVICE,required"`
+	MsgKey     string `env:"MESSAGING_KEY,required"`
+}
 
 // @title           msg-scheduler API
 // @version         1.0
@@ -19,23 +29,19 @@ import (
 
 // @host      localhost:3000
 // @BasePath  /api/v1
-
-// @securityDefinitions.basic  BasicAuth
 func main() {
 	docs.SwaggerInfo.BasePath = "/api/v1"
-	viper.SetConfigFile("./dev.env")
-	viper.ReadInConfig()
+	cfg := Config{AppName: "msg-scheduler"}
 
-	env := viper.Get("ENV").(string)
-	port := viper.Get("PORT").(string)
-	dbUrl := viper.Get("DB_URL").(string)
-
-	msgService := viper.Get("MESSAGING_SERVICE").(string)
-	msgKey := viper.Get("MESSAGING_KEY").(string)
+	/*using envdecode to avoid repetition, but the same can be easily
+	achieved with multiple os.Getenv(key) and ordinary error handling */
+	if err := envdecode.StrictDecode(&cfg); err != nil {
+		log.Fatal(err)
+	}
 
 	engine := gin.Default()
 
-	api.RegisterRoutes(engine, db.Init(dbUrl, env), messaging.Init(msgService, msgKey))
+	api.RegisterRoutes(engine, db.Init(cfg.DBURL, cfg.Env), messaging.Init(cfg.MsgService, cfg.MsgKey))
 
-	engine.Run(port)
+	engine.Run(cfg.Port)
 }
