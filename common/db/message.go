@@ -6,14 +6,14 @@ import (
 )
 
 func (c *Client) CreateMessage(message *models.Message) (*models.Message, error) {
-	if err := c.DB.Debug().Create(message).Error; err != nil {
+	if err := c.DB.Create(message).Error; err != nil {
 		return nil, err
 	}
 	return message, nil
 }
 
 func (c *Client) UpdateMessage(message *models.Message) (*models.Message, error) {
-	db := c.DB.Debug().Model(&models.Message{}).Where("id = ?", message.ID).Take(&models.Message{}).UpdateColumns(
+	db := c.DB.Model(&models.Message{}).Where("id = ?", message.ID).Take(&models.Message{}).UpdateColumns(
 		map[string]interface{}{
 			"content":    message.Content,
 			"subject":    message.Subject,

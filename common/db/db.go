@@ -15,9 +15,11 @@ type DB interface {
 	LookupSession(token string) *models.Session
 
 	CreateUser(u *models.User) (*models.User, error)
+	UpdateUserStatus(user *models.User) (*models.User, error)
 	UserByEmail(email string) (*models.User, error)
 	UserByID(id uint) (*models.User, error)
 	Users() (*[]models.User, error)
+	PendingUsers() (*[]models.User, error)
 	DeleteUser(id uint) error
 
 	CreateMessage(message *models.Message) (*models.Message, error)
@@ -25,6 +27,11 @@ type DB interface {
 	MessageByID(id uint) (*models.Message, error)
 	Messages() (*[]models.Message, error)
 	DeleteMessage(id uint) error
+
+	CreateSentMessage(sent *models.SentMessage) (*models.SentMessage, error)
+	MessagesSentFor(ids []uint) (*[]models.SentMessage, error)
+	MessagesSent() (*[]models.SentMessage, error)
+	MessagesByUserID(id uint) (*[]models.SentMessage, error)
 }
 
 type Client struct {
@@ -51,7 +58,7 @@ func Init(url, env string) *Client {
 		log.Fatalln(err)
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Message{}, &models.Session{})
+	db.AutoMigrate(&models.User{}, &models.Message{}, &models.Session{}, &models.SentMessage{})
 	client := &Client{DB: db}
 	if result := db.First(&models.Message{}); result.RowsAffected == 0 {
 		seedMessages(client)

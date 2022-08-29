@@ -6,18 +6,10 @@ import (
 	"github.com/r0bertson/msg-scheduler/api/service"
 	"github.com/r0bertson/msg-scheduler/common/db"
 	"github.com/r0bertson/msg-scheduler/common/messaging"
+	"github.com/r0bertson/msg-scheduler/common/utils"
 	"github.com/r0bertson/msg-scheduler/docs"
 	"log"
 )
-
-type Config struct {
-	AppName    string
-	Env        string `env:"ENV,default=local"`
-	DBURL      string `env:"DB_URL,default=./db.sqlite"`
-	Port       string `env:"PORT,default=3000"`
-	MsgService string `env:"MESSAGING_SERVICE,required"`
-	MsgKey     string `env:"MESSAGING_KEY,required"`
-}
 
 // @title           msg-scheduler API
 // @version         2.0
@@ -31,7 +23,7 @@ type Config struct {
 // @BasePath  /api/v1
 func main() {
 	docs.SwaggerInfo.BasePath = "/api/v2"
-	cfg := Config{AppName: "github.com/r0bertson/msg-scheduler/api"}
+	cfg := utils.Config{AppName: "github.com/r0bertson/msg-scheduler/api"}
 
 	/*using envdecode to avoid repetition, but the same can be easily
 	achieved with multiple os.Getenv(key) and ordinary error handling */

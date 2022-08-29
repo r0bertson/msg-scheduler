@@ -131,7 +131,7 @@ func (h handler) CreateUser(c *gin.Context) (interface{}, error) {
 	if err == nil {
 		return BadRequest(c, "user already created")
 	}
-	user = &models.User{Email: body.Email, Password: body.Password}
+	user = &models.User{Email: body.Email, Password: body.Password, ShouldSendMessages: true}
 
 	user, err = h.DB.CreateUser(user)
 	if err != nil {

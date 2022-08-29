@@ -13,7 +13,7 @@ func (c *Client) CreateSession(userID uint, userEmail string) (*models.Session, 
 		Email:  userEmail,
 	}
 
-	if err := c.DB.Debug().Create(&session).Error; err != nil {
+	if err := c.DB.Create(&session).Error; err != nil {
 		return nil, err
 	}
 	return &session, nil

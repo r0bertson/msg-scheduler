@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/r0bertson/msg-scheduler/common/models"
 	"github.com/r0bertson/msg-scheduler/common/utils"
+	"time"
 )
 
 func (c *Client) CreateUser(u *models.User) (*models.User, error) {
@@ -14,7 +15,7 @@ func (c *Client) CreateUser(u *models.User) (*models.User, error) {
 	}
 	u.Password = string(hashedPassword)
 
-	if err = c.DB.Debug().Create(&u).Error; err != nil {
+	if err = c.DB.Create(&u).Error; err != nil {
 		return nil, err
 	}
 	return u, nil
@@ -40,10 +41,35 @@ func (c *Client) UserByID(id uint) (*models.User, error) {
 
 func (c *Client) Users() (*[]models.User, error) {
 	var users []models.User
-	if result := c.DB.Find(&users); result.Error != nil {
+	result := c.DB.Find(&users)
+	if result.Error != nil {
 		return nil, result.Error
 	}
 	return &users, nil
+}
+
+func (c *Client) PendingUsers() (*[]models.User, error) {
+	var users []models.User
+	result := c.DB.Where("should_send_messages = ?", true).Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &users, nil
+}
+
+func (c *Client) UpdateUserStatus(user *models.User) (*models.User, error) {
+	db := c.DB.Model(&models.User{}).Where("id = ?", user.ID).Take(&models.User{}).UpdateColumns(
+		map[string]interface{}{
+			"should_send_messages": user.ShouldSendMessages,
+			"updated_at":           time.Now(),
+		},
+	)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	// This is the display the updated message
+	return c.UserByID(user.ID)
 }
 
 func (c *Client) DeleteUser(id uint) error {
