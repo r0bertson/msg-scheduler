@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/r0bertson/msg-scheduler/common/models"
 	"github.com/r0bertson/msg-scheduler/common/utils"
+	"github.com/rs/zerolog/log"
 )
 
 // GetMessage godoc
@@ -96,6 +97,13 @@ func (h handler) CreateMessage(c *gin.Context) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	go func() {
+		if err := h.DB.ActivateUsers(); err != nil {
+			//TODO: this should never happen so a retry mechanism here is needed.
+			log.Error().Msg("Couldn't activate users.")
+		}
+	}()
 
 	return message, err
 }

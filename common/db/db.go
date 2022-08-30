@@ -20,6 +20,8 @@ type DB interface {
 	UserByID(id uint) (*models.User, error)
 	Users() (*[]models.User, error)
 	PendingUsers() (*[]models.User, error)
+	InactiveUsers() (*[]models.User, error)
+	ActivateUsers() error
 	DeleteUser(id uint) error
 
 	CreateMessage(message *models.Message) (*models.Message, error)

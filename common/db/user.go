@@ -48,9 +48,17 @@ func (c *Client) Users() (*[]models.User, error) {
 	return &users, nil
 }
 
+func (c *Client) InactiveUsers() (*[]models.User, error) {
+	return c.UsersByStatus(false)
+}
+
 func (c *Client) PendingUsers() (*[]models.User, error) {
+	return c.UsersByStatus(true)
+}
+
+func (c *Client) UsersByStatus(status bool) (*[]models.User, error) {
 	var users []models.User
-	result := c.DB.Where("should_send_messages = ?", true).Find(&users)
+	result := c.DB.Where("should_send_messages = ?", status).Find(&users)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -70,6 +78,16 @@ func (c *Client) UpdateUserStatus(user *models.User) (*models.User, error) {
 	}
 	// This is the display the updated message
 	return c.UserByID(user.ID)
+}
+
+func (c *Client) ActivateUsers() error {
+	db := c.DB.Debug().Model(&models.User{}).Where("should_send_messages = false").UpdateColumns(
+		map[string]interface{}{
+			"should_send_messages": true,
+			"updated_at":           time.Now(),
+		},
+	)
+	return db.Error
 }
 
 func (c *Client) DeleteUser(id uint) error {
