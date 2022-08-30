@@ -13,7 +13,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "MessageID"
-// @Success      200  {object}  ErrResp
+// @Success      200  {object}  models.Message
 // @Failure      404  {object}  ErrResp
 // @Router       /messages/{id} [get]
 func (h handler) GetMessage(c *gin.Context) (interface{}, error) {
@@ -36,7 +36,7 @@ func (h handler) GetMessage(c *gin.Context) (interface{}, error) {
 // @Tags         messages
 // @Accept       json
 // @Produce      json
-// @Success      200  {array}  ErrResp
+// @Success      200  {array}  models.Message
 // @Failure      500  {object}  ErrResp
 // @Router       /messages [get]
 func (h handler) GetMessages(c *gin.Context) (interface{}, error) {
@@ -44,8 +44,8 @@ func (h handler) GetMessages(c *gin.Context) (interface{}, error) {
 }
 
 // DeleteMessage godoc
-// @Summary      delete a message
-// @Description  delete a message
+// @Summary      Deletes a message
+// @Description  Deletes a message
 // @Tags         messages
 // @Accept       json
 // @Produce      json
@@ -68,12 +68,12 @@ func (h handler) DeleteMessage(c *gin.Context) (interface{}, error) {
 
 // CreateMessage godoc
 // @Summary      Creates a new message
-// @Description  creates a new message
+// @Description  Creates a new message
 // @Tags         messages
 // @Accept       json
 // @Produce      json
 // @Param  data body MessageOperationsRequestBody true "message operations request"
-// @Success      200  {object}  models.User
+// @Success      200  {object}  models.Message
 // @Failure      400  {object}  ErrResp
 // @Router       /messages [post]
 func (h handler) CreateMessage(c *gin.Context) (interface{}, error) {
@@ -101,14 +101,14 @@ func (h handler) CreateMessage(c *gin.Context) (interface{}, error) {
 }
 
 // UpdateMessage godoc
-// @Summary      updates a message
-// @Description  updates a message
+// @Summary      Updates a message
+// @Description  Updates a message
 // @Tags         messages
 // @Accept       json
 // @Produce      json
-// @Param        id   path      int  true  "MessageId"
+// @Param        id   path      int  true  "MessageID"
 // @Param  		 data body MessageOperationsRequestBody true "message operations request"
-// @Success      200  {object}  models.User
+// @Success      200  {object}  models.Message
 // @Failure      400  {object}  ErrResp
 // @Router       /messages/{id} [post]
 func (h handler) UpdateMessage(c *gin.Context) (interface{}, error) {
