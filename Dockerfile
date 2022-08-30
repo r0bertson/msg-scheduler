@@ -17,11 +17,19 @@ FROM base AS builder
 # Copy over whole source tree.
 COPY . app
 
-WORKDIR /work/app/$SERVICE
+WORKDIR /work/app
+
+RUN pwd && ls -l
 
 RUN go mod download
 # Do all code generation (migrations and mocks)
 RUN go generate ./...
+
+RUN go install github.com/swaggo/swag/cmd/swag@v1.8.4 #latest version is currently broken (august 30th)
+
+RUN swag init -g api/main.go --parseDependency --parseInternal --parseDepth 3
+
+WORKDIR /work/app/$SERVICE
 
 RUN GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o /work/bin/app/$SERVICE
 
