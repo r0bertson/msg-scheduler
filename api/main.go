@@ -8,7 +8,7 @@ import (
 	"github.com/r0bertson/msg-scheduler/common/messaging"
 	"github.com/r0bertson/msg-scheduler/common/utils"
 	"github.com/r0bertson/msg-scheduler/docs"
-	"log"
+	"github.com/rs/zerolog/log"
 )
 
 // @title           msg-scheduler API
@@ -20,7 +20,7 @@ import (
 // @contact.email  email@robertsonlima.com
 
 // @host      localhost:3000
-// @BasePath  /api/v1
+// @BasePath  /api/v2
 func main() {
 	docs.SwaggerInfo.BasePath = "/api/v2"
 	cfg := utils.Config{AppName: "github.com/r0bertson/msg-scheduler/api"}
@@ -28,7 +28,7 @@ func main() {
 	/*using envdecode to avoid repetition, but the same can be easily
 	achieved with multiple os.Getenv(key) and ordinary error handling */
 	if err := envdecode.StrictDecode(&cfg); err != nil {
-		log.Fatal(err)
+		log.Fatal().Msg(err.Error())
 	}
 
 	engine := gin.Default()

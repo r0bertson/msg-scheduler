@@ -14,7 +14,7 @@ func RegisterRoutes(engine *gin.Engine, db *db.Client, msgService messaging.MsgS
 		msgService: msgService,
 	}
 
-	version1 := engine.Group("/api/v1/")
+	version1 := engine.Group("/api/v2/")
 	{
 		authGroup := version1.Group("/auth")
 		{

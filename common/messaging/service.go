@@ -1,7 +1,7 @@
 package messaging
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
 
@@ -22,7 +22,7 @@ func Init(service, key string) MsgService {
 		sendgrid := SendgridService{key: key}
 		return &sendgrid
 	default:
-		log.Fatalln("messaging service not implemented")
+		log.Fatal().Msg("messaging service not implemented")
 	}
 	return nil
 }

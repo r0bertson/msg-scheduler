@@ -3,10 +3,10 @@ package db
 import (
 	"errors"
 	"github.com/r0bertson/msg-scheduler/common/models"
+	"github.com/rs/zerolog/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
 	"os"
 )
 
@@ -46,7 +46,7 @@ func Init(url, env string) *Client {
 		_, err := os.Stat(url)
 		if errors.Is(err, os.ErrNotExist) {
 			if _, err := os.Create(url); err != nil {
-				log.Fatal(err)
+				log.Fatal().Msg(err.Error())
 			}
 		}
 		db, err = gorm.Open(sqlite.Open(url), &gorm.Config{})
@@ -55,7 +55,7 @@ func Init(url, env string) *Client {
 	}
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal().Msg(err.Error())
 	}
 
 	db.AutoMigrate(&models.User{}, &models.Message{}, &models.Session{}, &models.SentMessage{})

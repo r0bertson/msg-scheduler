@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/r0bertson/msg-scheduler/common/models"
-	"log"
+	"github.com/rs/zerolog/log"
 	"math/rand"
 )
 
@@ -28,7 +28,7 @@ func getDefaultMessages() []models.Message {
 func seedMessages(db *Client) {
 	for _, msg := range getDefaultMessages() {
 		if _, err := db.CreateMessage(&msg); err != nil {
-			log.Fatal(err)
+			log.Fatal().Msg(err.Error())
 		}
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/r0bertson/msg-scheduler/common/messaging"
 	"github.com/r0bertson/msg-scheduler/common/utils"
 	"github.com/r0bertson/msg-scheduler/scheduler/service"
-	"log"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
@@ -15,7 +15,8 @@ func main() {
 	/*using envdecode to avoid repetition, but the same can be easily
 	achieved with multiple os.Getenv(key) and ordinary error handling */
 	if err := envdecode.StrictDecode(&cfg); err != nil {
-		log.Fatal(err)
+		log.Fatal().Msg(err.Error())
+
 	}
 	serv := service.Init(db.Init(cfg.DBURL, cfg.Env), messaging.Init(cfg.MsgService, cfg.MsgKey))
 	serv.RunCronJobs()

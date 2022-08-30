@@ -1,11 +1,11 @@
 package service
 
 import (
-	"fmt"
 	"github.com/go-co-op/gocron"
 	"github.com/r0bertson/msg-scheduler/common/db"
 	"github.com/r0bertson/msg-scheduler/common/messaging"
 	"github.com/r0bertson/msg-scheduler/common/models"
+	"github.com/rs/zerolog/log"
 	"math/rand"
 	"time"
 )
@@ -36,12 +36,8 @@ func notIn(list []uint, in []uint) []uint {
 	return notIn
 }
 
-func randomRange(max int) int {
-	return rand.Intn(max)
-}
-
 func (s *Service) sendMessages() {
-	fmt.Println("Started sending messages")
+	log.Info().Msg("Started sending messages.")
 	messages, err := s.DB.Messages()
 	if err != nil {
 		return //skipping error because it'll be retried later
@@ -71,7 +67,7 @@ func (s *Service) sendMessages() {
 		nextMsgId := pendingMessages[rand.Intn(len(pendingMessages))]
 		nextMsg := messageDict[nextMsgId]
 
-		fmt.Println(fmt.Sprintf("sending message #%d to user %d", nextMsgId, stats.User.ID))
+		log.Info().Msgf("Sending message #%d to user %d", nextMsgId, stats.User.ID)
 		if err := s.msgService.SendMessage(messaging.EmailPayload{
 			To:      stats.Email,
 			Subject: nextMsg.Subject,
@@ -88,18 +84,18 @@ func (s *Service) sendMessages() {
 
 		if sentMessage, err = s.DB.CreateSentMessage(sentMessage); err != nil {
 			//todo: retry mechanism would be good here
-			fmt.Println("couldn't insert sent message into DB")
+			log.Info().Msg("Couldn't insert sent message into DB.")
 			continue
 		}
 
 		if len(pendingMessages) == 1 {
 			stats.User.ShouldSendMessages = false
 			s.DB.UpdateUserStatus(&stats.User)
-			fmt.Println(fmt.Sprintf("All messages were sent to user %d", stats.User.ID))
+			log.Info().Msgf("All messages were sent to user %d", stats.User.ID)
 			//no need to handle errors here, because we check for their side effect in the beginning of this loop
 		}
 	}
-	fmt.Println("Finished sending messages")
+	log.Info().Msg("Finished sending messages.")
 
 }
 
