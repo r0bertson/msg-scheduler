@@ -1,12 +1,12 @@
 # msg-scheduler
 
-###v1 implementation details:
+### v1.0.1 implementation details:
 When a user registers, the API already schedule every stored email using the messaging service (SendGrid). This way, the API doesn't need to handle anything besides registering the user, selecting the messages to be sent and calling SendGrid with the payload.
 
 Pros: it is fairly simple and the scheduling works just fine.
 Cons: if we create a new message, there is no register of what was already sent to the user.
 
-###v2 implementation details:
+### v2.0.0 implementation details:
 Now we register everything that is sent to each user, and we won't simply rely on SendGrid. There are two services, one API to handle the CRUD operations and one responsible for querying pending users, messages and sending emails. There is a simple retry mechanism in place, so if we miss one message, it'll be retried every minute. If we register a new message, all users that already received the rest and were marked as inactive will become active again.
 
 Pros: more robust.
