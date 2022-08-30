@@ -59,6 +59,7 @@ func (s *Service) sendMessages() {
 		pendingMessages := notIn(messageIds, stats.Stats.SentMessages)
 		if len(pendingMessages) == 0 {
 			//in case the flag is still true
+			log.Info().Msgf("All messages were sent to user %d", stats.User.ID)
 			stats.User.ShouldSendMessages = false
 			s.DB.UpdateUserStatus(&stats.User)
 			continue
@@ -73,6 +74,7 @@ func (s *Service) sendMessages() {
 			Subject: nextMsg.Subject,
 			Content: nextMsg.Content,
 		}); err != nil {
+			log.Error().Msgf("Failed to send message #%d to user %d", nextMsgId, stats.User.ID)
 			//ignoring error because it'll be retried one minute later
 			continue
 		}
