@@ -23,6 +23,9 @@ RUN go mod download
 # Do all code generation (migrations and mocks)
 RUN go generate ./...
 
+RUN go install github.com/swaggo/swag/cmd/swag@v1.8.4 #latest version is currently broken (august 30th)
+RUN swag init --parseDependency --parseInternal --parseDepth 3
+
 RUN GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o /work/bin/backend
 
 #####################################################################################
